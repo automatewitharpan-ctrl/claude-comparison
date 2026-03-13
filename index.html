@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claude 2.0 — The Leap Forward</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #0a0a0f;
+      --paper: #f5f0e8;
+      --cream: #ede8dc;
+      --accent: #c84b2f;
+      --gold: #d4a843;
+      --muted: #7a7568;
+      --border: rgba(10,10,15,0.12);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* NOISE TEXTURE */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    /* MASTHEAD */
+    .masthead {
+      border-bottom: 1px solid var(--border);
+      padding: 1.2rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: var(--paper);
+      z-index: 100;
+      backdrop-filter: blur(8px);
+    }
+    .masthead-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+    .masthead-date {
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 92vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .hero-left {
+      padding: 6rem 4rem 6rem 5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-right: 1px solid var(--border);
+      position: relative;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 2rem;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .hero-headline {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(5rem, 10vw, 9rem);
+      line-height: 0.92;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-headline .accent-word {
+      color: var(--accent);
+      display: block;
+    }
+
+    .hero-sub {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic;
+      font-size: 1.25rem;
+      color: var(--muted);
+      max-width: 420px;
+      line-height: 1.5;
+      margin-bottom: 3rem;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink);
+      text-decoration: none;
+      border-bottom: 1.5px solid var(--ink);
+      padding-bottom: 0.3rem;
+      width: fit-content;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .hero-cta:hover { color: var(--accent); border-color: var(--accent); }
+
+    .hero-right {
+      background: var(--ink);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-right::before {
+      content: '2.0';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28rem;
+      color: rgba(255,255,255,0.03);
+      line-height: 1;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .hero-stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .hero-stat {
+      background: var(--ink);
+      padding: 2rem;
+      transition: background 0.3s;
+    }
+    .hero-stat:hover { background: #13131a; }
+
+    .hero-stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3.5rem;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    .hero-stat-label {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* SECTION LAYOUT */
+    .section {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-header {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-number {
+      border-right: 1px solid var(--border);
+      padding: 2rem 2.5rem;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 5rem;
+      color: var(--cream);
+      line-height: 1;
+    }
+
+    .section-title-wrap {
+      padding: 2rem 3rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .section-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.2rem;
+      line-height: 1.15;
+    }
+
+    /* BENCHMARKS */
+    .benchmarks-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .benchmark-card {
+      border-right: 1px solid var(--border);
+      padding: 3rem 2.5rem;
+      position: relative;
+      overflow: hidden;
+      cursor: default;
+      transition: background 0.3s;
+    }
+    .benchmark-card:last-child { border-right: none; }
+    .benchmark-card:hover { background: var(--cream); }
+
+    .benchmark-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .benchmark-bars {
+      margin-bottom: 1.5rem;
+    }
+
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .bar-version {
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      width: 4rem;
+      flex-shrink: 0;
+    }
+
+    .bar-track {
+      flex: 1;
+      height: 6px;
+      background: var(--border);
+      border-radius: 0;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 0;
+      transform-origin: left;
+      animation: barGrow 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation-delay: var(--delay, 0s);
+      transform: scaleX(0);
+    }
+
+    .bar-fill.v2 { background: var(--accent); }
+    .bar-fill.v1 { background: rgba(10,10,15,0.2); }
+
+    @keyframes barGrow {
+      from { transform: scaleX(0); }
+      to { transform: scaleX(1); }
+    }
+
+    .bar-score {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      width: 3.5rem;
+      flex-shrink: 0;
+      color: var(--ink);
+    }
+
+    .benchmark-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.4rem;
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+    }
+    .benchmark-desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* FEATURES */
+    .features-body {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .feature-item {
+      padding: 3rem;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      transition: background 0.3s;
+    }
+    .feature-item:hover { background: var(--cream); }
+    .feature-item:nth-child(2n) { border-right: none; }
+
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+
+    .feature-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .feature-detail {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .feature-tag {
+      display: inline-block;
+      margin-top: 1.2rem;
+      padding: 0.25rem 0.75rem;
+      background: var(--accent);
+      color: white;
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    /* COMPARISON TABLE */
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      padding: 1.5rem 2rem;
+      text-align: left;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+    }
+    th:last-child { border-right: none; }
+    th.highlight { background: var(--ink); color: var(--gold); }
+
+    td {
+      padding: 1.5rem 2rem;
+      font-size: 0.88rem;
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    td:last-child { border-right: none; }
+
+    tr:hover td { background: var(--cream); }
+
+    td.highlight {
+      background: rgba(200,75,47,0.06);
+      font-weight: 500;
+      color: var(--accent);
+    }
+
+    .check { color: #2a9d5c; font-size: 1.1rem; }
+    .cross { color: #c0392b; font-size: 1.1rem; }
+
+    /* QUOTE */
+    .quote-section {
+      background: var(--ink);
+      color: white;
+      padding: 8rem 5rem;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .quote-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .quote-text {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      line-height: 1.4;
+      color: var(--paper);
+      position: relative;
+    }
+    .quote-text::before {
+      content: '"';
+      font-family: 'DM Serif Display', serif;
+      font-size: 8rem;
+      line-height: 0;
+      position: absolute;
+      top: 2.5rem;
+      left: -2rem;
+      color: var(--gold);
+      opacity: 0.4;
+    }
+    .quote-source {
+      margin-top: 1.5rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      font-style: normal;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 3rem 5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border);
+    }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+    }
+    .footer-note {
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ANIMATIONS */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-left { padding: 4rem 2rem; border-right: none; }
+      .hero-right { min-height: 50vh; }
+      .benchmarks-grid { grid-template-columns: 1fr; }
+      .benchmark-card { border-right: none; }
+      .features-body { grid-template-columns: 1fr; }
+      .feature-item:nth-child(2n) { border-right: 1px solid var(--border); }
+      .quote-section { grid-template-columns: 1fr; padding: 4rem 2rem; gap: 2rem; }
+      .section-header { grid-template-columns: 80px 1fr; }
+      .section-number { font-size: 3rem; padding: 1.5rem; }
+      .masthead { padding: 1rem 1.5rem; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- MASTHEAD -->
+  <header class="masthead">
+    <div class="masthead-logo">Anthropic Report</div>
+    <div class="masthead-date">Special Edition &mdash; Claude 2.0 Analysis</div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <div class="hero-eyebrow">Intelligence Evolved</div>
+      <h1 class="hero-headline">
+        Claude
+        <span class="accent-word">2.0</span>
+        Arrives
+      </h1>
+      <p class="hero-sub">
+        A generational leap in reasoning, safety, and capacity.
+        How Anthropic rewrote the rules of what an AI can do.
+      </p>
+      <a href="#benchmarks" class="hero-cta">
+        Explore the data →
+      </a>
+    </div>
+    <div class="hero-right">
+      <div class="hero-stat-grid">
+        <div class="hero-stat fade-in">
+          <div class="hero-stat-num">100K</div>
+          <div class="hero-stat-label">Token context window</div>
+        </div>
+        <div class="hero-stat fade-in" style="animation-delay:0.1s">
+          <div class="hero-stat-num">2×</div>
+          <div class="hero-stat-label">Safer responses</div>
+        </div>
+        <div class="hero-stat fade-in" style="animation-delay:0.2s">
+          <div class="hero-stat-num">71%</div>
+          <div class="hero-stat-label">Python coding score</div>
+        </div>
+        <div class="hero-stat fade-in" style="animation-delay:0.3s">
+          <div class="hero-stat-num">90th</div>
+          <div class="hero-stat-label">Percentile on GRE</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENCHMARKS -->
+  <section class="section" id="benchmarks">
+    <div class="section-header">
+      <div class="section-number">01</div>
+      <div class="section-title-wrap">
+        <h2 class="section-title">Benchmark Performance — Claude 2.0 vs 1.3</h2>
+      </div>
+    </div>
+    <div class="benchmarks-grid">
+
+      <div class="benchmark-card fade-in">
+        <div class="benchmark-label">Coding &mdash; HumanEval</div>
+        <div class="benchmark-bars">
+          <div class="bar-row">
+            <span class="bar-version">v2.0</span>
+            <div class="bar-track">
+              <div class="bar-fill v2" style="width:71.2%; --delay:0.2s;"></div>
+            </div>
+            <span class="bar-score">71.2%</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-version">v1.3</span>
+            <div class="bar-track">
+              <div class="bar-fill v1" style="width:56%; --delay:0.4s;"></div>
+            </div>
+            <span class="bar-score">56.0%</span>
+          </div>
+        </div>
+        <div class="benchmark-title">Python Coding</div>
+        <div class="benchmark-desc">+15.2 percentage points on the Codex HumanEval benchmark. Claude 2.0 writes cleaner, more functional Python code.</div>
+      </div>
+
+      <div class="benchmark-card fade-in">
+        <div class="benchmark-label">Mathematics &mdash; GSM8k</div>
+        <div class="benchmark-bars">
+          <div class="bar-row">
+            <span class="bar-version">v2.0</span>
+            <div class="bar-track">
+              <div class="bar-fill v2" style="width:88%; --delay:0.3s;"></div>
+            </div>
+            <span class="bar-score">88.0%</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-version">v1.3</span>
+            <div class="bar-track">
+              <div class="bar-fill v1" style="width:85.2%; --delay:0.5s;"></div>
+            </div>
+            <span class="bar-score">85.2%</span>
+          </div>
+        </div>
+        <div class="benchmark-title">Math Reasoning</div>
+        <div class="benchmark-desc">Grade-school math problem-solving shows steady improvement, reflecting better multi-step logical reasoning.</div>
+      </div>
+
+      <div class="benchmark-card fade-in">
+        <div class="benchmark-label">Legal &mdash; Bar Exam MBE</div>
+        <div class="benchmark-bars">
+          <div class="bar-row">
+            <span class="bar-version">v2.0</span>
+            <div class="bar-track">
+              <div class="bar-fill v2" style="width:76.5%; --delay:0.4s;"></div>
+            </div>
+            <span class="bar-score">76.5%</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-version">v1.3</span>
+            <div class="bar-track">
+              <div class="bar-fill v1" style="width:73%; --delay:0.6s;"></div>
+            </div>
+            <span class="bar-score">73.0%</span>
+          </div>
+        </div>
+        <div class="benchmark-title">Legal Knowledge</div>
+        <div class="benchmark-desc">Surpassing the passing threshold on the Bar Exam's multiple-choice section, up 3.5 points from v1.3.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-number">02</div>
+      <div class="section-title-wrap">
+        <h2 class="section-title">Key Improvements Over Claude 1.0</h2>
+      </div>
+    </div>
+    <div class="features-body">
+
+      <div class="feature-item fade-in">
+        <span class="feature-icon">📖</span>
+        <div class="feature-name">100,000 Token Context</div>
+        <div class="feature-detail">
+          Claude 2.0 can process roughly 75,000 words in a single prompt — entire books, codebases,
+          or hundreds of pages of documentation. Claude 1.0 was limited to ~9,000 tokens, making
+          long-document analysis impossible in a single pass.
+        </div>
+        <span class="feature-tag">11× larger context</span>
+      </div>
+
+      <div class="feature-item fade-in">
+        <span class="feature-icon">🛡️</span>
+        <div class="feature-name">Constitutional AI Safety</div>
+        <div class="feature-detail">
+          2× better at producing harmless responses vs Claude 1.3. Trained with Anthropic's
+          Constitutional AI framework and RLHF refinements, Claude 2.0 declines harmful requests
+          more reliably without becoming overly restrictive.
+        </div>
+        <span class="feature-tag">2× safer</span>
+      </div>
+
+      <div class="feature-item fade-in">
+        <span class="feature-icon">💻</span>
+        <div class="feature-name">Advanced Code Generation</div>
+        <div class="feature-detail">
+          From 56% to 71.2% on HumanEval — a massive leap for developers. Claude 2.0 writes
+          multi-file programs, debugs complex logic, understands modern frameworks, and generates
+          production-quality code across Python, JavaScript, TypeScript, Rust, and more.
+        </div>
+        <span class="feature-tag">+27% coding improvement</span>
+      </div>
+
+      <div class="feature-item fade-in">
+        <span class="feature-icon">✍️</span>
+        <div class="feature-name">Long-Form Document Creation</div>
+        <div class="feature-detail">
+          Claude 2.0 generates coherent long documents — memos, legal briefs, technical reports,
+          and stories — all in a single generation. Earlier models struggled to maintain coherence
+          beyond a few paragraphs without losing track of structure or context.
+        </div>
+        <span class="feature-tag">Sustained coherence</span>
+      </div>
+
+      <div class="feature-item fade-in">
+        <span class="feature-icon">🎓</span>
+        <div class="feature-name">Graduate-Level Reasoning</div>
+        <div class="feature-detail">
+          Scoring above the 90th percentile on GRE Reading and Writing, with solid performance on
+          quantitative reasoning. Claude 2.0's training on richer, more recent data allows it to
+          reason across domains with nuance that v1.0 couldn't achieve.
+        </div>
+        <span class="feature-tag">Top 10% on GRE</span>
+      </div>
+
+      <div class="feature-item fade-in">
+        <span class="feature-icon">🌐</span>
+        <div class="feature-name">More Current Knowledge</div>
+        <div class="feature-detail">
+          Trained on data extending into early 2023, Claude 2.0 knows about modern libraries,
+          recent events, and newer programming frameworks. Claude 1.0's knowledge cutoff left
+          significant gaps for developers working with current tools.
+        </div>
+        <span class="feature-tag">Updated training data</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- COMPARISON TABLE -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-number">03</div>
+      <div class="section-title-wrap">
+        <h2 class="section-title">Head-to-Head Comparison</h2>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Capability</th>
+            <th>Claude 1.0</th>
+            <th class="highlight">Claude 2.0</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Context Window</td>
+            <td>~9,000 tokens</td>
+            <td class="highlight">100,000 tokens</td>
+          </tr>
+          <tr>
+            <td>Python Coding (HumanEval)</td>
+            <td>~56%</td>
+            <td class="highlight">71.2%</td>
+          </tr>
+          <tr>
+            <td>Math Reasoning (GSM8k)</td>
+            <td>85.2%</td>
+            <td class="highlight">88.0%</td>
+          </tr>
+          <tr>
+            <td>Bar Exam Score</td>
+            <td>73.0%</td>
+            <td class="highlight">76.5%</td>
+          </tr>
+          <tr>
+            <td>Safety (Harmlessness)</td>
+            <td>Baseline</td>
+            <td class="highlight">2× improved</td>
+          </tr>
+          <tr>
+            <td>GRE Reading/Writing</td>
+            <td>Below 90th percentile</td>
+            <td class="highlight">Above 90th percentile</td>
+          </tr>
+          <tr>
+            <td>Long-form document generation</td>
+            <td><span class="cross">✗</span> Limited</td>
+            <td class="highlight"><span class="check">✓</span> Multi-thousand tokens</td>
+          </tr>
+          <tr>
+            <td>Modern framework knowledge</td>
+            <td><span class="cross">✗</span> Gaps</td>
+            <td class="highlight"><span class="check">✓</span> Up-to-date (2023)</td>
+          </tr>
+          <tr>
+            <td>LSAT Reasoning</td>
+            <td>~70%</td>
+            <td class="highlight">76%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- QUOTE -->
+  <div class="quote-section">
+    <div>
+      <div class="quote-label">Anthropic &mdash; July 2023</div>
+    </div>
+    <blockquote>
+      <div class="quote-text">
+        Claude 2 produces output that is significantly more truthful and beneficial than the Claude 1.3 model —
+        representing our most comprehensive step yet toward building AI that is safe, accurate, and genuinely helpful.
+      </div>
+      <div class="quote-source">— Anthropic Research Team, Claude 2 Release</div>
+    </blockquote>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Anthropic Report</div>
+    <div class="footer-note">Data sourced from Anthropic's official Claude 2.0 release, July 11, 2023 &nbsp;·&nbsp; anthropic.com/news/claude-2</div>
+  </footer>
+
+  <script>
+    // Intersection observer for fade-ins
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(el => {
+        if (el.isIntersecting) {
+          el.target.classList.add('visible');
+          observer.unobserve(el.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
