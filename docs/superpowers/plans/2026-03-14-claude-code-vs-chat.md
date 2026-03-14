@@ -1,3 +1,27 @@
+# Claude Code vs Claude Chat Page Implementation Plan
+
+> **For agentic workers:** REQUIRED: Use superpowers:subagent-driven-development (if subagents available) or superpowers:executing-plans to implement this plan. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Replace `index.html` with a dark-mode split-screen comparison page contrasting Claude Code (CLI) and Claude Chat (web).
+
+**Architecture:** Single self-contained `index.html` with inline CSS and JS. No build step, no dependencies, no framework. Deploys as static HTML to Vercel.
+
+**Tech Stack:** HTML5, CSS (custom properties, grid, flexbox), vanilla JS (IntersectionObserver for fade-ins), Google Fonts (Inter).
+
+---
+
+## Chunk 1: Build and verify the HTML page
+
+### Task 1: Write the replacement index.html
+
+**Files:**
+- Modify: `claude-comparison/index.html` (full replacement)
+
+- [ ] **Step 1: Write the full HTML file**
+
+Replace `claude-comparison/index.html` with the following complete page:
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -250,6 +274,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1.5rem;
+      margin-top: 0;
     }
     .which-card {
       background: var(--surface);
@@ -527,3 +552,47 @@
   </script>
 </body>
 </html>
+```
+
+- [ ] **Step 2: Verify the file renders correctly**
+
+Open `claude-comparison/index.html` in a browser and confirm:
+- Dark background, three sections visible (cards, table, which-one)
+- Purple tint on Claude Chat card, teal on Claude Code card
+- Table rows highlight on hover
+- Responsive at 375px width (cards stack vertically)
+
+- [ ] **Step 3: Commit**
+
+```bash
+cd "claude-comparison"
+git add index.html docs/superpowers/specs/2026-03-14-claude-code-vs-chat-design.md docs/superpowers/plans/2026-03-14-claude-code-vs-chat.md
+git commit -m "feat: replace comparison page with Claude Code vs Claude Chat"
+```
+
+---
+
+## Chunk 2: Deploy
+
+### Task 2: Push to GitHub
+
+**Note:** `git push` over HTTPS on Windows requires a credential dialog. The user must push manually or provide a PAT.
+
+- [ ] **Step 1: Instruct user to push**
+
+Run or ask user to run:
+```bash
+cd "C:/Users/arpan/Documents/ai ceo - vercel deployment/claude-comparison"
+git push origin master
+```
+If prompted, enter GitHub credentials in the Windows dialog.
+
+### Task 3: Deploy to Vercel
+
+- [ ] **Step 1: Deploy via Vercel MCP**
+
+Use the `deploy_to_vercel` MCP tool to deploy the `claude-comparison` directory to the existing project under team `automatewitharpan-2641s-projects`.
+
+- [ ] **Step 2: Confirm deployment URL**
+
+Retrieve and share the live Vercel URL with the user.
